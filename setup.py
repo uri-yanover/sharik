@@ -10,7 +10,7 @@ setup(
     url='https://github.com/uri-yanover/sharik',
     entry_points={
         'console_scripts': [
-            'sharik = sharik.cli:main'
+            'sharik = sharik.cli:cli_main'
         ]
     },
     install_requires=['click', 'dataclasses']
