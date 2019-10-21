@@ -79,7 +79,7 @@ class _SharikShellGenerator(object):
         
         # Do not separate those two statements!
         yield self.final_command
-        yield 'return $?'
+        yield b'exit $?'
 
     def gen_string(self) -> str:
         return '\n'.join(line.decode('utf-8') for line in self._gen())
