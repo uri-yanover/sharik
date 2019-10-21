@@ -20,7 +20,7 @@ V1="pica"
 K2="bar/moo"
 V2="shoo"
 
-sharik -x --command foo --add "${TMP_PATH_1}" \
+sharik -x --command 'ls -la' --add "${TMP_PATH_1}" \
     --inline "${K1}=${V1}" --inline "${K2}=${V2}" --clear-glob 'test.txt' \
     -o "${TMP_PATH_2}"/sharik.sh
 
@@ -50,6 +50,5 @@ rm -rf "${TMP_PATH_2}/${K1}" "${TMP_PATH_2}/${K2}"
 if  diff -r "${TMP_PATH_1}" "${TMP_PATH_2}"; then
     exit -4
 fi
-
 
 rm -rf "${TMP_PATH_1}" "${TMP_PATH_2}"

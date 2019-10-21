@@ -14,5 +14,3 @@ class TestSanity(TestCase):
 
         from sys import stderr
         stderr.write(f.build().decode('utf-8'))
-
-        print(f.build())
