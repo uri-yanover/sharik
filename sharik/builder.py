@@ -31,12 +31,12 @@ class _SharikShellGenerator(object):
     elements: Tuple[Tuple[str, ContentSupplier], ...]
 
     def _gen_header(self) -> Generator[bytes, None, None]:
-        yield '#!/bin/sh'
+        yield b'#!/bin/sh'
 
         if self.trace:
-            yield 'set +x'
+            yield b'set +x'
         
-        yield '''
+        yield f'''
 decode() {
     base64 --decode | gunzip - > "${1}"
 }
