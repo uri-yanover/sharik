@@ -9,7 +9,7 @@ mkdir -p "${TMP_PATH_1}"/bar
 mkdir -p "${TMP_PATH_1}"/buzz
 echo "${UNIQUE}" > "${TMP_PATH_1}"/test.txt
 echo "world" > "${TMP_PATH_1}"/bar/doo
-echo "mundo" > "${TMP_PATH_1}"/bar/moo
+echo "mundo" > "${TMP_PATH_1}"/bar/moon
 echo "buddie" > "${TMP_PATH_1}"/buzz/woop 
 
 K1="inl"
@@ -20,7 +20,7 @@ V2="shoo"
 sharik --command foo --add "${TMP_PATH_1}" --inline "${K1}=${V1}" --inline "${K2}=${V2}" --clear-glob 'test.txt' > "${TMP_PATH_2}"/sharik.sh
 cat "${TMP_PATH_2}"/sharik.sh
 
-if [ ! grep "${UNIQUE}" "${TMP_PATH_2}"/sharik.sh ]; then
+if ! grep "${UNIQUE}" "${TMP_PATH_2}"/sharik.sh; then
     echo "Not encoded clearly"
     exit -1
 fi
