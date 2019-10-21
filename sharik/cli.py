@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import click
-from typing import Tuple
+from typing import Tuple, Any
 from .data_sources import InlineDataSource, FileDataSource
 from .builder import SharikBuilder
 
-def _process_inline(_ctx: click.Context, values: Tuple[str]) -> Tuple[Tuple[str, bytes], ...]:
+def _process_inline(_ctx: click.Context, _param: Any, values: Tuple[str]) -> Tuple[Tuple[str, bytes], ...]:
     def _gen_element(value):
         first_equals = value.find('=')
         if first_equals <= 0:
