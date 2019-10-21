@@ -16,12 +16,12 @@ def _process_inline(_ctx: click.Context, _param: Any, values: Tuple[str]) -> Tup
 @click.option('-x', 'trace', is_flag=True, required=False, default=False, 
               help="Print each step to standard output")
 @click.option('--command', type=str, required=True, help="Shell command to be run after unpacking")
-@click.option('--add', type=click.File(), multiple=True, help="File to be added")
+@click.option('--add', type=click.Path(exists=True), multiple=True, help="File to be added")
 @click.option('--inline', type=str, multiple=True, help="Inline parameters to be added",
               callback=_process_inline)
 @click.option('--clear-glob', type=str, multiple=True, 
               help="Files to be represented without compression/encoding")
-@click.option('-o', '--output', type=click.Path(), required=True,
+@click.option('-o', '--output', type=click.File(), required=True,
               help="File to which to output the result, can be - for stdout")
 def cli_main(trace: bool = False,
              command: str = '/bin/false', 
