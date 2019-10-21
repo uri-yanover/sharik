@@ -13,7 +13,7 @@ def _process_inline(_ctx: click.Context, _param: Any, values: Tuple[str]) -> Tup
     return tuple(_gen_element(value) for value in values)
 
 @click.command()
-@click.option('-x', 'trace', type=bool, required=False, default=False, 
+@click.option('-x', 'trace', is_flag=True, required=False, default=False, 
               help="Print each step to standard output")
 @click.option('--command', type=str, required=True, help="Shell command to be run after unpacking")
 @click.option('--add', type=click.File(), multiple=True, help="File to be added")
