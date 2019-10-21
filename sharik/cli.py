@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import click
-from typing import Tuple, Any
+from typing import Tuple, Any, BinaryIO
 from .data_sources import InlineDataSource, FileDataSource
 from .builder import SharikBuilder
 
@@ -13,25 +13,30 @@ def _process_inline(_ctx: click.Context, _param: Any, values: Tuple[str]) -> Tup
     return tuple(_gen_element(value) for value in values)
 
 @click.command()
+@click.option('-x', 'trace', type=bool, required=False, default=False, 
+              help="Print each step to standard output")
 @click.option('--command', type=str, required=True, help="Shell command to be run after unpacking")
-@click.option('--add', type=click.Path(), multiple=True, help="File to be added")
+@click.option('--add', type=click.File(), multiple=True, help="File to be added")
 @click.option('--inline', type=str, multiple=True, help="Inline parameters to be added",
               callback=_process_inline)
 @click.option('--clear-glob', type=str, multiple=True, 
               help="Files to be represented without compression/encoding")
-
-def cli_main(command: str, 
-             add: Tuple[str, ...],
-             inline: Tuple[Tuple[str, bytes], ...],
-             clear_glob: Tuple[str, ...]):
-    builder = SharikBuilder(command.encode('utf-8'))
+@click.option('--output', type=click.Path(), required=True,
+              help="File to which to output the result, can be - for stdout")
+def cli_main(trace: bool = False,
+             command: str = '/bin/false', 
+             add: Tuple[str, ...] = (),
+             inline: Tuple[Tuple[str, bytes], ...] = (),
+             clear_glob: Tuple[str, ...] = (),
+             output: BinaryIO = None):
+    builder = SharikBuilder(command.encode('utf-8'), trace)
     for element in add:
         builder.add_data_source(FileDataSource(element))
     if len(inline) > 0:
         builder.add_data_source(InlineDataSource(inline))
     for element in clear_glob:
         builder.add_clear_glob(element)
-    print(builder.build())
+    output.write(builder.build())
 
 if __name__ == '__main__':
     cli_main()

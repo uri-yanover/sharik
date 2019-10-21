@@ -17,7 +17,10 @@ V1="pica"
 K2="bar/moo"
 V2="shoo"
 
-sharik --command foo --add "${TMP_PATH_1}" --inline "${K1}=${V1}" --inline "${K2}=${V2}" --clear-glob 'test.txt' > "${TMP_PATH_2}"/sharik.sh
+sharik -x --command foo --add "${TMP_PATH_1}" \
+    --inline "${K1}=${V1}" --inline "${K2}=${V2}" --clear-glob 'test.txt' \
+    -o "${TMP_PATH_2}"/sharik.sh
+
 cat "${TMP_PATH_2}"/sharik.sh
 
 if ! grep "${UNIQUE}" "${TMP_PATH_2}"/sharik.sh; then

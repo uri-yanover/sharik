@@ -26,12 +26,18 @@ def _compress(data: bytes) -> bytes:
 @dataclass
 class _SharikShellGenerator(object):
     final_command: bytes
+    trace: bool
     clear_globs: List[str]
     elements: Tuple[Tuple[str, ContentSupplier], ...]
 
-    @staticmethod
-    def _gen_header() -> Generator[bytes, None, None]:
-        yield '''decode() {
+    def _gen_header(self) -> Generator[bytes, None, None]:
+        yield '#!/bin/sh'
+
+        if self.trace:
+            yield 'set +x'
+        
+        yield '''
+decode() {
     base64 --decode | gunzip - > "${1}"
 }
 '''.encode('utf-8')
@@ -65,10 +71,18 @@ class _SharikShellGenerator(object):
     def _gen(self) -> Generator[bytes, None, None]:
         yield from self._gen_header()
 
+        known_files = set()
+
         for (file_name, supplier) in self.elements:
+            if file_name in known_files:
+                raise ValueError(f"Received the same file twice {file_name}")
+            known_files.add(file_name)
             is_clear = self._is_filename_clear(file_name)
             yield from self._gen_per_file(file_name, is_clear, supplier)
+        
+        # Do not separate those two statements!
         yield self.final_command
+        yield 'return $?'
 
     def gen_string(self) -> str:
         return '\n'.join(line.decode('utf-8') for line in self._gen())
@@ -76,6 +90,7 @@ class _SharikShellGenerator(object):
 @dataclass
 class SharikBuilder(object):
     final_command: str
+    trace: bool = False
     components: List[Tuple[str, bool, ContentSupplier]] = field(default_factory=list)
     clear_globs: List[str] = field(default_factory=list)
 
@@ -98,5 +113,6 @@ class SharikBuilder(object):
     def build(self) -> str:
         return _SharikShellGenerator(
             self.final_command,
+            self.trace,
             self.clear_globs, 
             self.normalized()).gen_string()

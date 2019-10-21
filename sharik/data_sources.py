@@ -25,7 +25,6 @@ def _gen_files(starting_path) -> Generator[Tuple[str, str], None, None]:
             for file_name in file_names:
                 source_path = join(dir_path, file_name)
                 archive_path = relpath(source_path, starting_path)
-                print(archive_path, source_path)
                 yield (archive_path, source_path)
 
     else:
