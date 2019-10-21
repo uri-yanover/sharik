@@ -13,6 +13,6 @@ class TestSanity(TestCase):
         f.add_clear_glob('dir/*')
 
         from sys import stderr
-        stderr.write(f.build())
+        stderr.write(f.build().decode('utf-8'))
 
         print(f.build())
