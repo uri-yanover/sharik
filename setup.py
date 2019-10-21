@@ -13,5 +13,5 @@ setup(
             'sharik = sharik.cli:main'
         ]
     },
-    install_requires=['click']
+    install_requires=['click', 'dataclasses']
 )
