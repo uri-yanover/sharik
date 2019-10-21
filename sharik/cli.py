@@ -21,7 +21,7 @@ def _process_inline(_ctx: click.Context, _param: Any, values: Tuple[str]) -> Tup
               callback=_process_inline)
 @click.option('--clear-glob', type=str, multiple=True, 
               help="Files to be represented without compression/encoding")
-@click.option('-o', '--output', type=click.Path(exists=False), required=True,
+@click.option('-o', '--output', type=click.File(mode='wb'), required=True,
               help="File to which to output the result, can be - for stdout")
 def cli_main(trace: bool = False,
              command: str = '/bin/false', 
