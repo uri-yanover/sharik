@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from functools import partial
 from dataclasses import dataclass, field
 from collections import OrderedDict
@@ -34,13 +33,11 @@ class _SharikShellGenerator(object):
         yield b'#!/bin/sh'
 
         if self.trace:
-            yield b'set +x'
+           yield b'set +x'
         
-        yield f'''
-decode() {
-    base64 --decode | gunzip - > "${1}"
-}
-'''.encode('utf-8')
+        yield f'''decode() {{
+     base64 --decode | gunzip - > "${1}"
+}}'''.encode('utf-8')
 
     @staticmethod
     def _gen_per_file(name: str, 
