@@ -81,8 +81,8 @@ class _SharikShellGenerator(object):
         yield self.final_command
         yield b'exit $?'
 
-    def gen_string(self) -> str:
-        return '\n'.join(line.decode('utf-8') for line in self._gen())
+    def gen_bytes(self) -> bytes:
+        return b'\n'.join(self._gen())
 
 @dataclass
 class SharikBuilder(object):
@@ -107,9 +107,9 @@ class SharikBuilder(object):
         result.sort()
         return tuple(result)
 
-    def build(self) -> str:
+    def build(self) -> bytes:
         return _SharikShellGenerator(
             self.final_command,
             self.trace,
             self.clear_globs, 
-            self.normalized()).gen_string()
+            self.normalized()).gen_bytes()
