@@ -10,7 +10,6 @@ UNIQUE="this is a long string that's supposed to be unique"
 
 mkdir -p "${TMP_PATH_1}"/bar
 mkdir -p "${TMP_PATH_1}"/buzz
-mkdir -p "${TMP_PATH_2}"
 echo "${UNIQUE}" > "${TMP_PATH_1}"/test.txt
 echo "world" > "${TMP_PATH_1}"/bar/doo
 echo "mundo" > "${TMP_PATH_1}"/bar/moon
