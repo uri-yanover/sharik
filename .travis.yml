@@ -3,7 +3,7 @@ python:
 - '3.6'
 install:
 - pip install -r requirements.txt
-- python setup.py install
+- python setup.py install sdist bdist_wheel
 script:
 - bash sharik/tests/test_cli.sh
 - pytest
