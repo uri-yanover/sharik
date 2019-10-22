@@ -3,12 +3,13 @@ python:
 - '3.6'
 install:
 - pip install -r requirements.txt
-- python setup.py install sdist bdist_wheel
+- python setup.py install
 script:
 - bash sharik/tests/test_cli.sh
 - pytest
 deploy:
   skip_cleanup: true
+  distributions: sdist bdist_wheel
   provider: pypi
   user: __token__
   password:
