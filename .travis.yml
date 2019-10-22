@@ -8,6 +8,7 @@ script:
 - bash sharik/tests/test_cli.sh
 - pytest
 deploy:
+  skip_cleanup: true
   distributions: sdist bdist_wheel
   provider: pypi
   user: __token__
