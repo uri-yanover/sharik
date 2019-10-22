@@ -1,17 +1,14 @@
 language: python
 python:
-  - "3.6"
-
+- '3.6'
 install:
-  - pip install -r requirements.txt
-  - python setup.py install
-
+- pip install -r requirements.txt
+- python setup.py install
 script:
-  - bash sharik/tests/test_cli.sh
-  - pytest
-
+- bash sharik/tests/test_cli.sh
+- pytest
 deploy:
   provider: pypi
-  user: "__token__"
+  user: __token__
   password:
-    secure: An2k2ymeZH346JX2Feh7ZkbVzwR1Z1zL6KuisMquU7WI32/rFttEyE4/UZfQoneTL88dvNiTax5PH3l9tT3gGEZiypnMzxHKs+mfv8/bow5cZFeh3r0zAD0sNdJ8zt41nPBKvmtYVhiDhy3S1MKp2rpudZEOLbV8hIiIiIYmjWALPerSAy2fdlkxJTQw47qZVGb4wKqiAFqLtagptRNlBoBhhvx3MBEUZUwQss5e0+nlECN13zbQuz1vbXteom//YW+bicYUoR3pr6aDiK3qHznPRZo/ZeH3liYsykx7sBJoax62100PSLBfEkTMncd3mwbZwdczLkwPIJjJEwgsH4B/FOJNELJ0ReP6HLrtLooTZw0A9a7rACdTFb4Q4LAsGVNpkoac3lpnrShJeW6Iksp0adthaHMsctFXSCUNUm8ZwwGMgh3B3Wqhy0qYAajNRchUhzPXaYZH8d5TMq2wVdZCe8W7wgRZBrQyk3p+1vXLO60mdJxySODU1O4EBAsLvQv1m+B0wYocQImr7wn+1v5r6mPONr27kh4RigQr1ar0gUKXNnSx7q96cgY5VZ9ry38ONBmn7bJ5CYV9diOGgJXnYV0aZYDwaTzJb/bpCbJEtEoGOkXQxwJz4q7Vv7C1uY+g4pK49qU3+W//VO9frTxFaARRMIuSkEA+PMLd0mk=
+    secure: Zt1xISJUMrNqsXMw4adJrJAKk6ZBkRKMR2yb67v7xyeFtY6RuP1t16LmKulcAwVGZrxpJNgHKF5Xc64ZotfwvIfnoqr0gnrGe6j67Hb1fiFnKAkb+qhks16DUhCehEPbrkvwZggH3jS9PGwa0nhBaisI5cLglE6hmStPh07CCosSkfe4hVT7m36yLfuoQf4ILl+ztDiB3DA6xfftnsM0rJl2w1pw9+LjFkGpx54KKtIwZpJZJWNnDZBr4Dn4DwUcJKpaSb+HTMwe2UxsJ3boY+D1yyseeFDcrITnqtfxwFfCsZahbd/pkHHMsyNXXNsL+ZgUvHIM13z+2rrUC7MoPF8pIFd5hsk7FmeU0qY0OyVsAQvO6cijrKcGa4SP9LGFw6Rwgf+r4PvTgLtfDfujCtD34hdOPbs9hCu95enV8OX0JlOK7eiMuMsJ1pU60UYegzKuycGRkmPvZTxieSxrclkhmHCNysp1mNvhhUBWwtWdxA41KrbM1CPTPTcLQ90U7xZG1HHjICj+e/SON0vHW0kJLBu9RTtsoXa6WC/6L3cPUHq/LaLA09HkII3HvXJvrreEs02tSymEZLEM/R1ueHD8Qwc42VT6VN7KSzXeyNNXmUY2hbTR4cB9I3Qh4zciWrN/ENEhDoZpWOENpqAnud1jQzZvDqRFSCqDBzH+xpE=
