@@ -2,13 +2,13 @@ from functools import partial
 from dataclasses import dataclass, field
 from collections import OrderedDict
 from os import path
-from typing import Callable, Dict, Generator, Tuple, List, NoReturn
+from typing import Callable, Dict, Generator, Tuple, List, NoReturn, Iterable
 from base64 import b64encode
 from fnmatch import fnmatch
 from zlib import compressobj, MAX_WBITS
 
 from .abstract import DataSource, ContentSupplier
-
+from .globs import globs_to_pattern
 
 # Note that '-' is not a valid base64 character
 _END_MARKER_STR = '---END-SHARIK---'
@@ -62,19 +62,17 @@ class _SharikShellGenerator(object):
             yield encoded_bytes
             yield _END_MARKER_BYTES
 
-    def _is_filename_clear(self, file_name: str) -> bool:
-        return any(fnmatch(file_name, pattern) for pattern in self.clear_globs)
-
     def _gen(self) -> Generator[bytes, None, None]:
         yield from self._gen_header()
 
         known_files = set()
 
+        pattern = globs_to_pattern(self.clear_globs)
         for (file_name, supplier) in self.elements:
             if file_name in known_files:
                 raise ValueError(f"Received the same file twice {file_name}")
             known_files.add(file_name)
-            is_clear = self._is_filename_clear(file_name)
+            is_clear = pattern is not None and pattern.search(file_name) is not None
             yield from self._gen_per_file(file_name, is_clear, supplier)
         
         # Do not separate those two statements!
@@ -85,14 +83,23 @@ class _SharikShellGenerator(object):
         return b'\n'.join(self._gen())
 
 @dataclass
+class DataSourceWithPrefix(object):
+    data_source: DataSource
+    prefix: str
+
+    def get_files(self) -> Iterable[Tuple[str, ContentSupplier]]:
+        return ((self.prefix + file_name, content_supplier) for 
+                (file_name, content_supplier) in self.data_source.provide_files())
+
+@dataclass
 class SharikBuilder(object):
     final_command: str
     trace: bool = False
-    components: List[Tuple[str, bool, ContentSupplier]] = field(default_factory=list)
+    components: List[DataSourceWithPrefix] = field(default_factory=list)
     clear_globs: List[str] = field(default_factory=list)
 
-    def add_data_source(self, data_source: DataSource) -> NoReturn:
-        self.components.append(data_source)
+    def add_data_source(self, data_source: DataSource, prefix='') -> NoReturn:
+        self.components.append(DataSourceWithPrefix(data_source, prefix))
 
     def add_clear_glob(self, clear_glob: str) -> NoReturn:
         self.clear_globs.append(clear_glob)
@@ -102,9 +109,18 @@ class SharikBuilder(object):
 
     def normalized(self) -> Tuple[Tuple[str, ContentSupplier], ...]:
         result = []
-        for data_source in self.components:
-            result.extend(data_source.provide_files())
-        result.sort()
+        
+        file_name_to_data_source = {}
+        for data_source_with_prefix in self.components:
+            for (file_name, content_supplier) in data_source_with_prefix.get_files():
+                result.append((file_name, content_supplier))
+                previous_source = file_name_to_data_source.get(file_name)
+                if previous_source is not None:
+                    raise ValueError(f"More than one source for the file name {file_name}." \
+                                     f"Previous source: {previous_source}, current one {data_source_with_prefix}")
+                file_name_to_data_source[file_name] = data_source_with_prefix
+
+        result.sort(key=lambda pair: pair[0])
         return tuple(result)
 
     def build(self) -> bytes:
