@@ -63,7 +63,6 @@ class FileDataSource(DataSource):
                      (whitelist_pattern.search(tested) is not None))
             is_blacklist_non_match = ((blacklist_pattern is None) or
                      (not blacklist_pattern.search(tested)))
-            print('ZZZZ', tested, is_whitelist_match, is_blacklist_non_match)
             return is_whitelist_match and is_blacklist_non_match
 
         return _predicate

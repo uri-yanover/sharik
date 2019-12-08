@@ -116,7 +116,7 @@ class SharikBuilder(object):
                 result.append((file_name, content_supplier))
                 previous_source = file_name_to_data_source.get(file_name)
                 if previous_source is not None:
-                    raise ValueError(f"More than one source for the file name {file_name}." \
+                    raise ValueError(f"More than one source for the file name {file_name}. " \
                                      f"Previous source: {previous_source}, current one {data_source_with_prefix}")
                 file_name_to_data_source[file_name] = data_source_with_prefix
 
