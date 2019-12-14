@@ -1,5 +1,4 @@
 from unittest import TestCase
-
 from sharik.builder import SharikBuilder
 from sharik.data_sources import InlineDataSource, FileDataSource
 
@@ -57,3 +56,10 @@ class TestSanity(TestCase):
         result = f.build().decode('utf-8')
         self.assertNotIn(anchor_out, result)            
         self.assertIn(anchor_in, result)
+
+    def testType(self):
+        try:
+            SharikBuilder('ls -la')
+            self.fail("Should not have accepted a parameter that's not bytes")
+        except:
+            pass

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from pydantic.dataclasses import dataclass
 from typing import Iterable, Tuple, Callable
 
 ContentSupplier = Callable[[], bytes]

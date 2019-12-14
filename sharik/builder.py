@@ -1,5 +1,6 @@
 from functools import partial
-from dataclasses import dataclass, field
+from pydantic.dataclasses import dataclass
+from dataclasses import field
 from collections import OrderedDict
 from os import path
 from typing import Callable, Dict, Generator, Tuple, List, NoReturn, Iterable
@@ -98,7 +99,7 @@ class SharikBuilder(object):
     components: List[DataSourceWithPrefix] = field(default_factory=list)
     clear_globs: List[str] = field(default_factory=list)
 
-    def add_data_source(self, data_source: DataSource, prefix='') -> NoReturn:
+    def add_data_source(self, data_source: DataSource, prefix: str='') -> NoReturn:
         self.components.append(DataSourceWithPrefix(data_source, prefix))
 
     def add_clear_glob(self, clear_glob: str) -> NoReturn:

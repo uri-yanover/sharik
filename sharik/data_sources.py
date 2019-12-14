@@ -1,6 +1,6 @@
 from .abstract import DataSource, ContentSupplier
 from .globs import globs_to_pattern
-from dataclasses import dataclass
+from pydantic.dataclasses import dataclass
 from typing import Tuple, Iterable, Generator, Callable, Pattern, Optional, Sequence
 from os import walk, listdir
 from os.path import isfile, isdir, join, split, relpath
@@ -13,11 +13,11 @@ def _id(x):
 
 @dataclass
 class InlineDataSource(DataSource):
-    _collection_of_files: Tuple[Tuple[str, bytes]]
+    collection_of_files: Tuple[Tuple[str, bytes], ...]
 
     def provide_files(self) -> Iterable[Tuple[str, ContentSupplier]]:
         return tuple((file_name, partial(_id, buffer))
-                    for (file_name, buffer) in self._collection_of_files)
+                    for (file_name, buffer) in self.collection_of_files)
 
 def _gen_files(starting_path: str, is_recursive: bool) -> Generator[Tuple[str, str], None, None]:
     if isfile(starting_path):
