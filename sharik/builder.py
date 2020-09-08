@@ -1,11 +1,8 @@
-from functools import partial
-from pydantic.dataclasses import dataclass
+from dataclasses import dataclass
 from dataclasses import field
-from collections import OrderedDict
 from os import path
-from typing import Callable, Dict, Generator, Tuple, List, NoReturn, Iterable
+from typing import Generator, Tuple, List, Iterable, Union
 from base64 import b64encode
-from fnmatch import fnmatch
 from zlib import compressobj, MAX_WBITS
 
 from .abstract import DataSource, ContentSupplier
@@ -25,13 +22,14 @@ def _compress(data: bytes) -> bytes:
 
 @dataclass
 class _SharikShellGenerator(object):
+    shell_path: bytes
     final_command: bytes
     trace: bool
     clear_globs: List[str]
     elements: Tuple[Tuple[str, ContentSupplier], ...]
 
     def _gen_header(self) -> Generator[bytes, None, None]:
-        yield b'#!/bin/sh'
+        yield b'#!' + self.shell_path
 
         if self.trace:
            yield b'set +x'
@@ -94,19 +92,17 @@ class DataSourceWithPrefix(object):
 
 @dataclass
 class SharikBuilder(object):
-    final_command: str
+    final_command: Union[bytes, str]
     trace: bool = False
+    shell_path: bytes = b'/bin/sh'
     components: List[DataSourceWithPrefix] = field(default_factory=list)
     clear_globs: List[str] = field(default_factory=list)
 
-    def add_data_source(self, data_source: DataSource, prefix: str='') -> NoReturn:
+    def add_data_source(self, data_source: DataSource, prefix: str='') -> None:
         self.components.append(DataSourceWithPrefix(data_source, prefix))
 
-    def add_clear_glob(self, clear_glob: str) -> NoReturn:
+    def add_clear_glob(self, clear_glob: str) -> None:
         self.clear_globs.append(clear_glob)
-
-    def _provide(self, name: str) -> bytes:
-        return self.components[name]
 
     def normalized(self) -> Tuple[Tuple[str, ContentSupplier], ...]:
         result = []
@@ -125,8 +121,14 @@ class SharikBuilder(object):
         return tuple(result)
 
     def build(self) -> bytes:
+        if isinstance(self.final_command, bytes):
+            command_bytes = self.final_command
+        else:
+            command_bytes = self.final_command.encode('utf-8')
+
         return _SharikShellGenerator(
-            self.final_command,
+            self.shell_path,
+            command_bytes,
             self.trace,
             self.clear_globs, 
             self.normalized()).gen_bytes()
