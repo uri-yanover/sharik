@@ -13,7 +13,7 @@ def _id(x):
 
 @dataclass
 class InlineDataSource(DataSource):
-    collection_of_files: Tuple[Tuple[str, bytes], ...]
+    collection_of_files: Sequence[Tuple[str, bytes]]
 
     def provide_files(self) -> Iterable[Tuple[str, ContentSupplier]]:
         return tuple((file_name, partial(_id, buffer))

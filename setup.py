@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sharik",
-    version="0.3.0",
+    version="0.4.0",
     packages=find_packages(),
     description='A shar(1)-like utility with a programmatic fine-tuned API',
     author='Uri Yanover',
@@ -13,5 +13,5 @@ setup(
             'sharik = sharik.cli:cli_main'
         ]
     },
-    install_requires=['click', 'dataclasses', 'pydantic']
+    install_requires=['click', "dataclasses ; python_version<='3.6'", 'pydantic']
 )
