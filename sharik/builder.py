@@ -4,9 +4,12 @@ from os import path
 from typing import Generator, Tuple, List, Iterable, Union
 from base64 import b64encode
 from zlib import compressobj, MAX_WBITS
+from logging import getLogger
 
 from .abstract import DataSource, ContentSupplier
 from .globs import globs_to_pattern
+
+_LOGGER = getLogger(__name__)
 
 # Note that '-' is not a valid base64 character
 _END_MARKER_STR = '---END-SHARIK---'
@@ -35,7 +38,7 @@ class _SharikShellGenerator(object):
            yield b'set +x'
         
         yield f'''decode() {{
-     base64 --decode | gunzip - > "${1}"
+     (base64 --decode || base64 -d) | gunzip - > "${1}"
 }}'''.encode('utf-8')
 
     @staticmethod
@@ -87,6 +90,9 @@ class DataSourceWithPrefix(object):
     prefix: str
 
     def get_files(self) -> Iterable[Tuple[str, ContentSupplier]]:
+        if not self.prefix.endswith('/'):
+            _LOGGER.info(f'Specified prefix {self.prefix} that is not a directory name')
+
         return ((self.prefix + file_name, content_supplier) for 
                 (file_name, content_supplier) in self.data_source.provide_files())
 
